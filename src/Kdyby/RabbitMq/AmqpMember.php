@@ -5,7 +5,7 @@ namespace Kdyby\RabbitMq;
 use Nette;
 use PhpAmqpLib\Channel\AMQPChannel;
 use PhpAmqpLib\Connection\AMQPLazyConnection;
-
+use PhpAmqpLib\Exception\AMQPRuntimeException;
 
 
 /**

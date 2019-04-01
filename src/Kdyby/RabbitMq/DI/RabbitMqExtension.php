@@ -155,7 +155,7 @@ class RabbitMqExtension extends Nette\DI\CompilerExtension
 	public function loadConfiguration()
 	{
 		$builder = $this->getContainerBuilder();
-		$config = $this->getConfig($this->defaults);
+		$config = Config\Helpers::merge($this->getConfig(), $this->defaults);
 
 		foreach ($this->compiler->getExtensions() as $extension) {
 			if ($extension instanceof IProducersProvider) {
@@ -386,8 +386,8 @@ class RabbitMqExtension extends Nette\DI\CompilerExtension
 
 	private function extendConsumerFromProducer(&$consumerName, $config)
 	{
-		if (isset($config[Config\Helpers::EXTENDS_KEY])) {
-			$producerName = $config[Config\Helpers::EXTENDS_KEY];
+		if (isset($config[Config\Helpers::PREVENT_MERGING])) {
+			$producerName = $config[Config\Helpers::PREVENT_MERGING];
 
 		} elseif ($m = Nette\Utils\Strings::match($consumerName, '~^(?P<consumerName>[^>\s]+)\s*\<\s*(?P<producerName>[^>\s]+)\z~')) {
 			$consumerName = $m['consumerName'];
@@ -427,7 +427,8 @@ class RabbitMqExtension extends Nette\DI\CompilerExtension
 			}
 
 			$builder->addDefinition($serviceName = $this->prefix('rpcClient.' . $name))
-				->setClass('Kdyby\RabbitMq\RpcClient', ['@' . $this->connectionsMeta[$config['connection']]['serviceId']])
+				->setClass('Kdyby\RabbitMq\RpcClient')
+				->setArguments(['@' . $this->connectionsMeta[$config['connection']]['serviceId']])
 				->addSetup('initClient', [$config['expectSerializedResponse']])
 				->addTag(self::TAG_RPC_CLIENT)
 				->setAutowired(FALSE);
@@ -450,7 +451,8 @@ class RabbitMqExtension extends Nette\DI\CompilerExtension
 			}
 
 			$rpcServer = $builder->addDefinition($serviceName = $this->prefix('rpcServer.' . $name))
-				->setClass('Kdyby\RabbitMq\RpcServer', ['@' . $this->connectionsMeta[$config['connection']]['serviceId']])
+				->setClass('Kdyby\RabbitMq\RpcServer')
+				->setArguments(['@' . $this->connectionsMeta[$config['connection']]['serviceId']])
 				->addSetup('initServer', [$name])
 				->addSetup('setCallback', [self::fixCallback($config['callback'])])
 				->addTag(self::TAG_RPC_SERVER)
@@ -488,7 +490,7 @@ class RabbitMqExtension extends Nette\DI\CompilerExtension
 		] as $i => $class) {
 			$builder->addDefinition($this->prefix('console.' . $i))
 				->setClass($class)
-				->addTag(Kdyby\Console\DI\ConsoleExtension::COMMAND_TAG);
+				->addTag(Kdyby\Console\DI\ConsoleExtension::TAG_COMMAND);
 		}
 	}
 
@@ -496,7 +498,7 @@ class RabbitMqExtension extends Nette\DI\CompilerExtension
 
 	protected function mergeConfig($config, $defaults)
 	{
-		return Config\Helpers::merge($config, $this->compiler->getContainerBuilder()->expand($defaults));
+		return Config\Helpers::merge($config, Nette\DI\Helpers::expand($defaults, $this->compiler->getContainerBuilder()->parameters));
 	}
 
 
@@ -519,7 +521,7 @@ class RabbitMqExtension extends Nette\DI\CompilerExtension
 	 */
 	protected static function filterArgs($statement)
 	{
-		return Nette\DI\Compiler::filterArguments([is_string($statement) ? new Nette\DI\Statement($statement) : $statement]);
+		return Config\Processor::processArguments([is_string($statement) ? new Nette\DI\Definitions\Statement($statement) : $statement]);
 	}
 
 

@@ -15,18 +15,23 @@
 			"email": "filip@prochazka.su"
 		}
 	],
+	"repositories": [
+		{
+			"type": "git",
+			"url": "https://github.com/PavelJurasek/Console"
+		}
+	],
 	"require": {
-		"php": ">=5.4",
-		"nette/di": "~2.4|^3.0",
-		"nette/utils": "~2.4|^3.0",
-
-		"php-amqplib/php-amqplib": "~2.6.2"
+		"php": "^7.1",
+		"nette/di": "^3.0-RC3",
+		"nette/utils": "^3.0",
+		"php-amqplib/php-amqplib": "^2.9"
 	},
 	"require-dev": {
-		"nette/bootstrap": "~2.4|^3.0",
-		"nette/tester": "^2.1",
+		"nette/bootstrap": "^3.0",
+		"nette/tester": "^2.2",
 		"mockery/mockery": "~0.9.1",
-		"kdyby/console": "~2.5"
+		"kdyby/console": "^3.0"
 	},
 	"support": {
 		"email": "filip@prochazka.su",

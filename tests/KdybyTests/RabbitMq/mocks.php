@@ -103,7 +103,7 @@ class ChannelMock extends Kdyby\RabbitMq\Channel
 
 
 
-	public function exchange_unbind($destination, $source, $routing_key = "", $arguments = NULL, $ticket = NULL)
+	public function exchange_unbind($destination, $source, $routing_key = "", $nowait = false, $arguments = NULL, $ticket = NULL)
 	{
 		$this->calls[] = [__FUNCTION__] + get_defined_vars();
 

@@ -14,6 +14,7 @@ use Kdyby\RabbitMq\Connection;
 use Kdyby\RabbitMq\Consumer;
 use KdybyTests;
 use Nette;
+use PhpAmqpLib\Exception\AMQPIOException;
 use Tester;
 use Tester\Assert;
 
@@ -31,7 +32,7 @@ class BaseAmqpTest extends TestCase
 
 		Assert::exception(function () use ($consumer) {
 			$consumer->getChannel();
-		}, 'PhpAmqpLib\Exception\AMQPRuntimeException', 'Error Connecting to server(111): Connection refused');
+		}, AMQPIOException::class, 'stream_socket_client(): unable to connect to tcp://localhost:123 (Connection refused)');
 	}
 
 }
