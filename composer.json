@@ -23,7 +23,7 @@
 	],
 	"require": {
 		"php": "^7.1",
-		"nette/di": "^3.0-RC3",
+		"nette/di": "^3.0",
 		"nette/utils": "^3.0",
 		"php-amqplib/php-amqplib": "^2.9"
 	},

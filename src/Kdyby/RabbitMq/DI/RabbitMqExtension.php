@@ -13,7 +13,6 @@ namespace Kdyby\RabbitMq\DI;
 use Kdyby;
 use Nette;
 use Nette\DI\Compiler;
-use Nette\PhpGenerator as Code;
 use Nette\DI\Config;
 use Nette\Utils\Validators;
 
@@ -521,7 +520,7 @@ class RabbitMqExtension extends Nette\DI\CompilerExtension
 	 */
 	protected static function filterArgs($statement)
 	{
-		return Config\Processor::processArguments([is_string($statement) ? new Nette\DI\Definitions\Statement($statement) : $statement]);
+		return Nette\DI\Helpers::filterArguments([is_string($statement) ? new Nette\DI\Definitions\Statement($statement) : $statement]);
 	}
 
 
